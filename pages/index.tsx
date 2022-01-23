@@ -1,37 +1,30 @@
 import Header from "../components/Header";
 import TFButton from "../components/TFButton";
-import { Box } from "@chakra-ui/react";
+import { Box, useDisclosure } from "@chakra-ui/react";
 import Answer from "../components/Answer";
 import { useState } from "react";
 import { ButtonState } from "../types/ButtonState";
 import { AnswerState } from "../types/AnswerState";
+import ShareDialog from "../components/ShareDialog";
 
 export default function Home() {
   const [TbtnState, setTbtnState] = useState<ButtonState>("unused");
   const [FbtnState, setFbtnState] = useState<ButtonState>("unused");
   const [answers, setAnswers] = useState<AnswerState[]>([]);
   const [isGame, setIsGame] = useState<boolean>(false);
+  const [attempts, setAttempts] = useState<number>(0);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const handleTbtnClick = async () => {
-    //答えがtrueだったら
-    if (await fetchAnswer(true)) {
-      setTbtnState("correct");
-      setAnswers((prev) => [...prev, { value: true, isCorrect: true }]);
+  const handleClick = async (Input: boolean) => {
+    setAttempts((prev) => prev + 1);
+    if (await fetchAnswer(Input)) {
+      Input ? setTbtnState("correct") : setFbtnState("correct");
+      setAnswers((prev) => [...prev, { value: Input, isCorrect: true }]);
       setIsGame(true);
+      onOpen();
     } else {
-      setTbtnState("used");
-      setAnswers((prev) => [...prev, { value: true, isCorrect: false }]);
-    }
-  };
-  const handleFbtnClick = async () => {
-    //答えがfalseだったら
-    if (await fetchAnswer(false)) {
-      setFbtnState("correct");
-      setAnswers((prev) => [...prev, { value: false, isCorrect: true }]);
-      setIsGame(true);
-    } else {
-      setFbtnState("used");
-      setAnswers((prev) => [...prev, { value: false, isCorrect: false }]);
+      Input ? setTbtnState("used") : setFbtnState("used");
+      setAnswers((prev) => [...prev, { value: Input, isCorrect: false }]);
     }
   };
   const fetchAnswer = async (value: boolean) => {
@@ -48,17 +41,18 @@ export default function Home() {
   return (
     <div>
       <Header />
+      <ShareDialog isOpen={isOpen} onClose={onClose} attempts={attempts} />
       <Box
         margin="10px"
         display="flex"
         flexDirection="column"
         alignItems="center"
       >
-        {answers.map((answer) => (
+        {answers.map((answer,index) => (
           <Answer
             value={answer.value}
             isCorrect={answer.isCorrect}
-            key={answer.toString()}
+            key={answer.toString()+index}
           />
         ))}
       </Box>
@@ -66,13 +60,13 @@ export default function Home() {
         <TFButton
           value={true}
           state={TbtnState}
-          onClick={handleTbtnClick}
+          onClick={() => handleClick(true)}
           disabled={isGame}
         />
         <TFButton
           value={false}
           state={FbtnState}
-          onClick={handleFbtnClick}
+          onClick={() => handleClick(false)}
           disabled={isGame}
         />
       </Box>
