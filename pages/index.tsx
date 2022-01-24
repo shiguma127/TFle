@@ -29,7 +29,7 @@ export default function Home() {
   };
   const fetchAnswer = async (value: boolean) => {
     let response = false;
-    await fetch("http://localhost:8787?answer=" + value)
+    await fetch(process.env.NEXT_PUBLIC_URL + "?answer=" + value)
       .then((response) => response.json())
       .then((data) => {
         response = data;
@@ -48,11 +48,11 @@ export default function Home() {
         flexDirection="column"
         alignItems="center"
       >
-        {answers.map((answer,index) => (
+        {answers.map((answer, index) => (
           <Answer
             value={answer.value}
             isCorrect={answer.isCorrect}
-            key={answer.toString()+index}
+            key={answer.toString() + index}
           />
         ))}
       </Box>
