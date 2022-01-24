@@ -8,7 +8,8 @@ const urlGenerater = (attempts: number): string => {
     str += missChar + returnStr;
   }
   str += correctChar + returnStr;
-  str += `I got the correct answer in ${attempts} guesses.`;
+  str += `I got the correct answer in ${attempts} guesses.`+returnStr;
+  str += location.href;  
   return baseUrl + str;
 };
 export default urlGenerater;
