@@ -23,7 +23,7 @@ const ShareDialog: React.VFC<ShareDialogProps> = (props) => {
     <Modal isOpen={props.isOpen} onClose={props.onClose}>
       <ModalOverlay>
         <ModalContent>
-          <ModalHeader>Congratulation🎉</ModalHeader>
+          <ModalHeader>Congratulations🎉</ModalHeader>
           <ModalCloseButton />
           <ModalBody display="flex" flexDirection="column">
             <Text>{`You got the correct answer in ${props.attempts} guesses.`}</Text>
